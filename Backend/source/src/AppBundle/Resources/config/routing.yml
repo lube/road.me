@@ -1,0 +1,29 @@
+roadme_get_tramo:
+    path: /api/tramo
+    defaults: { _controller: AppBundle:Default:getTramo , _format:json}
+    requirements:
+        _method: POST   
+
+roadme_get_tramos:
+    path: /api/tramos
+    defaults: { _controller: AppBundle:Default:getTramos , _format:json}
+    requirements:
+        _method: GET
+
+roadme_set_tramo:
+    path: /api/tramo/{id}
+    defaults: { _controller: AppBundle:Default:updateTramo , _format:json}
+    requirements:
+        _method: POST
+
+roadme_get_incidentes:
+    path: /api/incidentes
+    defaults: { _controller: AppBundle:Default:getIncidentes , _format:json}
+    requirements:
+        _method: POST
+
+roadme_set_incidente:
+    path: /api/incidente/{id}
+    defaults: { _controller: AppBundle:Default:updateIncidente , _format:json}
+    requirements:
+        _method: POST
