@@ -28,7 +28,7 @@ USE `road.me`;
 -- Table structure for table `incidente`
 --
 
-CREATE TABLE IF NOT EXISTS `incidente` (
+CREATE TABLE IF NOT EXISTS `Incidente` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `nombre` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `descripcion` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS `incidente` (
 -- Table structure for table `punto`
 --
 
-CREATE TABLE IF NOT EXISTS `punto` (
+CREATE TABLE IF NOT EXISTS `Punto` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `lat` double NOT NULL,
   `lng` double NOT NULL,
@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS `punto` (
 -- Dumping data for table `punto`
 --
 
-INSERT INTO `punto` (`id`, `lat`, `lng`) VALUES
+INSERT INTO `Punto` (`id`, `lat`, `lng`) VALUES
 (1, -41.994186, -65.293776),
 (2, -42.744073, -65.110995),
 (3, -43.232959, -65.300974),
@@ -172,7 +172,7 @@ INSERT INTO `punto` (`id`, `lat`, `lng`) VALUES
 -- Table structure for table `tramo`
 --
 
-CREATE TABLE IF NOT EXISTS `tramo` (
+CREATE TABLE IF NOT EXISTS `Tramo` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `nombre` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `estado` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
@@ -183,7 +183,7 @@ CREATE TABLE IF NOT EXISTS `tramo` (
 -- Dumping data for table `tramo`
 --
 
-INSERT INTO `tramo` (`id`, `nombre`, `estado`) VALUES
+INSERT INTO `Tramo` (`id`, `nombre`, `estado`) VALUES
 (1, 'Aº VERDE - PTO. MADRYN', 'TP'),
 (2, 'PTO. MADRYN - TRELEW', 'TP'),
 (3, 'TRELEW - GARAYALDE', 'TP'),

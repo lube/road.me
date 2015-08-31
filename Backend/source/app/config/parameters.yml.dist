@@ -1,10 +1,21 @@
 # This file is auto-generated during the composer install
 parameters:
+    #mysql system database config
+    database_driver: pdo_mysql
     database_host: 127.0.0.1
     database_port: null
     database_name: NOMBREDATABASE
     database_user: USERDATABASE
     database_password: PASSDATABASE
+    
+    #postgre openstreetmap database config
+    psql_database_driver: pdo_pgsql
+    psql_database_host: 127.0.0.1
+    psql_database_port: 5432
+    psql_database_name: NOMBREDATABASEOSM
+    psql_database_user: USERDATABASEOSM
+    psql_database_password: PASSDATABASEOSM
+
     mailer_transport: smtp
     mailer_host: 127.0.0.1
     mailer_user: null
