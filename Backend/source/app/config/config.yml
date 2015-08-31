@@ -64,16 +64,6 @@ doctrine:
                 password: "%database_password%"
                 charset:  UTF8
 
-            # how you call your additional connection is up to you
-            # for me it is pgsql - you need it in a bit again
-            pgsql:
-                driver:   "%psql_database_driver%"
-                host:     "%psql_database_host%"
-                port:     "%psql_database_port%"
-                dbname:   "%psql_database_name%"
-                user:     "%psql_database_user%"
-                password: "%psql_database_password%"
-                charset:  UTF8
     orm:
         auto_generate_proxy_classes: "%kernel.debug%"        
         default_entity_manager: default
@@ -81,18 +71,11 @@ doctrine:
         entity_managers:
             default:
                 connection: default
-
                 # unfortunately you have to list ALL bundles
                 # which are using the default connection now
                 mappings:
                     AppBundle:  ~
                     
-            pgsql:
-                connection: pgsql    # connection name for your additional DB
-
-                # bundles which going to use the PostgreSQL DB
-                mappings:
-                    AppBundle: ~
 # Swiftmailer Configuration
 swiftmailer:
     transport: "%mailer_transport%"

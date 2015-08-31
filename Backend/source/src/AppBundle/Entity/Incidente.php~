@@ -158,4 +158,96 @@ class Incidente {
     {
         return $this->puntos;
     }
+
+    /**
+     * Set descripcion
+     *
+     * @param string $descripcion
+     * @return Incidente
+     */
+    public function setDescripcion($descripcion)
+    {
+        $this->descripcion = $descripcion;
+
+        return $this;
+    }
+
+    /**
+     * Get descripcion
+     *
+     * @return string 
+     */
+    public function getDescripcion()
+    {
+        return $this->descripcion;
+    }
+
+    /**
+     * Set lat
+     *
+     * @param float $lat
+     * @return Incidente
+     */
+    public function setLat($lat)
+    {
+        $this->lat = $lat;
+
+        return $this;
+    }
+
+    /**
+     * Get lat
+     *
+     * @return float 
+     */
+    public function getLat()
+    {
+        return $this->lat;
+    }
+
+    /**
+     * Set lng
+     *
+     * @param float $lng
+     * @return Incidente
+     */
+    public function setLng($lng)
+    {
+        $this->lng = $lng;
+
+        return $this;
+    }
+
+    /**
+     * Get lng
+     *
+     * @return float 
+     */
+    public function getLng()
+    {
+        return $this->lng;
+    }
+
+    /**
+     * Set tipoIncidente
+     *
+     * @param string $tipoIncidente
+     * @return Incidente
+     */
+    public function setTipoIncidente($tipoIncidente)
+    {
+        $this->tipoIncidente = $tipoIncidente;
+
+        return $this;
+    }
+
+    /**
+     * Get tipoIncidente
+     *
+     * @return string 
+     */
+    public function getTipoIncidente()
+    {
+        return $this->tipoIncidente;
+    }
 }

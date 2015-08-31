@@ -14,10 +14,9 @@ class Punto {
      *
      * @var type integer
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
      * @ORM\Column(type="integer")
      */
-    protected $id;
+    private $id;
     
     /**
      *
@@ -33,6 +32,17 @@ class Punto {
     private $lng;
 
     /**
+     * Set id
+     *
+     * @return integer 
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+        return $this->id;
+    }
+
+    /**
      * Get id
      *
      * @return integer 
@@ -40,52 +50,6 @@ class Punto {
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set latitud
-     *
-     * @param float $latitud
-     * @return Punto
-     */
-    public function setLatitud($latitud)
-    {
-        $this->latitud = $latitud;
-
-        return $this;
-    }
-
-    /**
-     * Get latitud
-     *
-     * @return float 
-     */
-    public function getLatitud()
-    {
-        return $this->latitud;
-    }
-
-    /**
-     * Set longitud
-     *
-     * @param float $longitud
-     * @return Punto
-     */
-    public function setLongitud($longitud)
-    {
-        $this->longitud = $longitud;
-
-        return $this;
-    }
-
-    /**
-     * Get longitud
-     *
-     * @return float 
-     */
-    public function getLongitud()
-    {
-        return $this->longitud;
     }
 
     /**
@@ -109,5 +73,49 @@ class Punto {
     public function getTramo()
     {
         return $this->tramo;
+    }
+
+    /**
+     * Set lat
+     *
+     * @return Punto
+     */
+    public function setLat($lat)
+    {
+        $this->lat = $lat;
+
+        return $this;
+    }
+
+    /**
+     * Get lat
+     *
+     * @return float 
+     */
+    public function getLat()
+    {
+        return $this->lat;
+    }
+
+    /**
+     * Set lng
+     *
+     * @return Punto
+     */
+    public function setLng($lng)
+    {
+        $this->lng = $lng;
+
+        return $this;
+    }
+
+    /**
+     * Get lng
+     *
+     * @return float 
+     */
+    public function getLng()
+    {
+        return $this->lng;
     }
 }

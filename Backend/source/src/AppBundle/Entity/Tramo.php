@@ -46,12 +46,17 @@ class Tramo {
      *      )
      */
     private $puntos;
-    
-    public function __construct($nombre, $puntos, $status = STATUS_TRANSITABLE) {
-        $this->puntos = $puntos;
-        $this->estado = $status;
-        $this->nombre = $nombre;
+    /**
+     * Set id
+     *
+     * @return integer 
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+        return $this->id;
     }
+
 
     /**
      * Get id
@@ -108,6 +113,7 @@ class Tramo {
     {
         return $this->estado;
     }
+
 
     /**
      * Add puntos

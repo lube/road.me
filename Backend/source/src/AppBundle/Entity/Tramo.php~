@@ -37,6 +37,15 @@ class Tramo {
      * @ORM\Column(type="string")
      */
     private $estado;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="Punto")
+     * @ORM\JoinTable(name="tramo_puntos",
+     *      joinColumns={@ORM\JoinColumn(name="tramo_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="punto_id", referencedColumnName="id")}
+     *      )
+     */
+    private $puntos;
     
     public function __construct($nombre, $puntos, $status = STATUS_TRANSITABLE) {
         $this->puntos = $puntos;

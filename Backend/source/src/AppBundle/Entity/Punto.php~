@@ -14,29 +14,33 @@ class Punto {
      *
      * @var type integer
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
      * @ORM\Column(type="integer")
      */
-    protected $id;
+    private $id;
     
     /**
      *
      * @ORM\Column(type="float")
      */
-    private $latitud;
+    private $lat;
     
     /**
      *
      * @var type Punto
      * @ORM\Column(type="float")
      */
-    private $longitud;
+    private $lng;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Tramo")
-     * @ORM\JoinColumn(name="tramo_id", referencedColumnName="id")
+     * Set id
+     *
+     * @return integer 
      */
-    private $tramo;
+    public function setId($id)
+    {
+        $this->id = $id;
+        return $this->id;
+    }
 
     /**
      * Get id

@@ -5,8 +5,12 @@ namespace AppBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Bundle\DoctrineBundle\ConnectionFactory;
 use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\SerializationContext;
+
+use AppBundle\Entity\Punto;
+use AppBundle\Entity\Tramo;
 
 class DefaultController extends Controller
 {
@@ -45,6 +49,92 @@ class DefaultController extends Controller
         }
     }
 
+    public function updateTestAction(Request $request)
+    {
+        try{
+            $serializer = $this->get('jms_serializer');
+            
+            $em = $this->getDoctrine()->getManager();
+            $repoPuntos   = $em->getRepository("AppBundle:Punto");
+            $repoTramos   = $em->getRepository("AppBundle:Tramo");
+
+            $connectionFactory = $this->container->get('doctrine.dbal.connection_factory');
+            $conn = $connectionFactory->createConnection(array(
+                'driver' => 'pdo_pgsql',
+                'user' => 'osm',
+                'password' => '12341234',
+                'host' => 'localhost',
+                'dbname' => 'osm',
+            ))->prepare('select id, tags, nodes from ways limit 2;');;
+
+            $conn->execute();
+
+         //   $jsonContent = $serialraw[0]izer->serialize(, 'json', SerializationContext::create());
+            
+            foreach ($conn->fetchAll() as $way) {
+                if (isset($way['tags'])) {
+                    $raw = explode(',', $way['tags']);
+               
+                    if (strpos($raw[0], 'name')) {
+                        $pre = stripslashes(stripslashes($raw[0]));
+                        $ways[] = array('id' => $way['id'],'name' => substr($pre, 9, -1), 'nodes' =>  explode(',',str_replace(array('{','}'), array('',''), $way['nodes']))) ;
+                    }
+                }
+
+            }
+
+            foreach ($ways as $i => $way) {
+                foreach ($way['nodes'] as $j => $point) {
+
+                    $t = new Tramo();
+                    $t->setEstado('TN');
+                    $t->setId($way['id']);
+                    $t->setNombre($way['name']);
+
+                    $conn = $connectionFactory->createConnection(array(
+                        'driver' => 'pdo_pgsql',
+                        'user' => 'osm',
+                        'password' => '12341234',
+                        'host' => 'localhost',
+                        'dbname' => 'osm',
+                    ))->prepare('select id, ST_x(geom), ST_y(geom) from nodes where id ='. $point .';');;
+
+                    $conn->execute();
+
+                    $result = $conn->fetchAll();
+                    $nodos[] = $result[0];
+                }
+
+                foreach ($nodos as $nodo) {
+                    $p = new Punto();
+         
+                    $p->setLat((float)$nodo['st_y']);
+                    $p->setLng((float)$nodo['st_x']);
+                    $p->setId($nodo['id']);
+
+                    $t->addPunto($p);
+
+                    $em->merge($p);
+                    $em->flush();      
+                }
+
+                $ts[] = $t;
+      
+                $em->merge($t);
+                $em->flush();   
+
+            }
+
+/*
+            $jsonContent = $serializer->serialize($ts, 'json', SerializationContext::create());*/
+
+            $response = new Response('ok');     
+            return $response;
+            
+        } catch (Exception $ex) {
+
+        }
+    }
     
     public function getTramosAction()
     {

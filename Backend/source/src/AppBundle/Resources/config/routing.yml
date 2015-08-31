@@ -10,6 +10,12 @@ roadme_get_tramos:
     requirements:
         _method: GET
 
+roadme_get_test:
+    path: /api/test
+    defaults: { _controller: AppBundle:Default:updateTest , _format:json}
+    requirements:
+        _method: GET
+
 roadme_set_tramo:
     path: /api/tramo/{id}
     defaults: { _controller: AppBundle:Default:updateTramo , _format:json}
