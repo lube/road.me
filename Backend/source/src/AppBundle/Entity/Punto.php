@@ -42,6 +42,8 @@ class Punto {
         return $this->id;
     }
 
+ 
+
     /**
      * Get id
      *
@@ -53,31 +55,9 @@ class Punto {
     }
 
     /**
-     * Set tramo
-     *
-     * @param \AppBundle\Entity\Tramo $tramo
-     * @return Punto
-     */
-    public function setTramo(\AppBundle\Entity\Tramo $tramo = null)
-    {
-        $this->tramo = $tramo;
-
-        return $this;
-    }
-
-    /**
-     * Get tramo
-     *
-     * @return \AppBundle\Entity\Tramo 
-     */
-    public function getTramo()
-    {
-        return $this->tramo;
-    }
-
-    /**
      * Set lat
      *
+     * @param float $lat
      * @return Punto
      */
     public function setLat($lat)
@@ -100,6 +80,7 @@ class Punto {
     /**
      * Set lng
      *
+     * @param float $lng
      * @return Punto
      */
     public function setLng($lng)

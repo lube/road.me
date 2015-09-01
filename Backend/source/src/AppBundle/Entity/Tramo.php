@@ -22,7 +22,7 @@ class Tramo {
      * @ORM\GeneratedValue(strategy="AUTO")
      * @ORM\Column(type="integer")
      */
-    protected $id;
+    private $id;
     
     /**
      *
@@ -40,12 +40,12 @@ class Tramo {
 
     /**
      * @ORM\ManyToMany(targetEntity="Punto")
-     * @ORM\JoinTable(name="tramo_puntos",
+     * @ORM\JoinTable(name="tramo_punto",
      *      joinColumns={@ORM\JoinColumn(name="tramo_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="punto_id", referencedColumnName="id")}
      *      )
      */
-    private $puntos;
+    private $punto;
     /**
      * Set id
      *
@@ -57,6 +57,15 @@ class Tramo {
         return $this->id;
     }
 
+
+    
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->punto = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
     /**
      * Get id
@@ -114,37 +123,36 @@ class Tramo {
         return $this->estado;
     }
 
-
     /**
-     * Add puntos
+     * Add punto
      *
-     * @param \AppBundle\Entity\Punto $puntos
+     * @param \AppBundle\Entity\Punto $punto
      * @return Tramo
      */
-    public function addPunto(\AppBundle\Entity\Punto $puntos)
+    public function addPunto(\AppBundle\Entity\Punto $punto)
     {
-        $this->puntos[] = $puntos;
+        $this->punto[] = $punto;
 
         return $this;
     }
 
     /**
-     * Remove puntos
+     * Remove punto
      *
-     * @param \AppBundle\Entity\Punto $puntos
+     * @param \AppBundle\Entity\Punto $punto
      */
-    public function removePunto(\AppBundle\Entity\Punto $puntos)
+    public function removePunto(\AppBundle\Entity\Punto $punto)
     {
-        $this->puntos->removeElement($puntos);
+        $this->punto->removeElement($punto);
     }
 
     /**
-     * Get puntos
+     * Get punto
      *
      * @return \Doctrine\Common\Collections\Collection 
      */
-    public function getPuntos()
+    public function getPunto()
     {
-        return $this->puntos;
+        return $this->punto;
     }
 }

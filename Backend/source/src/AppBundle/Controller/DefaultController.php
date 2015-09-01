@@ -65,7 +65,7 @@ class DefaultController extends Controller
                 'password' => '12341234',
                 'host' => 'localhost',
                 'dbname' => 'osm',
-            ))->prepare('select id, tags, nodes from ways limit 2;');;
+            ))->prepare('select id, tags, nodes from ways limit 1;');;
 
             $conn->execute();
 
@@ -83,14 +83,8 @@ class DefaultController extends Controller
 
             }
 
-            foreach ($ways as $i => $way) {
+            foreach ($ways as $way) {
                 foreach ($way['nodes'] as $j => $point) {
-
-                    $t = new Tramo();
-                    $t->setEstado('TN');
-                    $t->setId($way['id']);
-                    $t->setNombre($way['name']);
-
                     $conn = $connectionFactory->createConnection(array(
                         'driver' => 'pdo_pgsql',
                         'user' => 'osm',
@@ -105,22 +99,35 @@ class DefaultController extends Controller
                     $nodos[] = $result[0];
                 }
 
+                $t = new Tramo();
+                $t->setEstado('TN');
+                $t->setId($way['id']);
+                $t->setNombre($way['name']);
+
+
                 foreach ($nodos as $nodo) {
-                    $p = new Punto();
-         
-                    $p->setLat((float)$nodo['st_y']);
-                    $p->setLng((float)$nodo['st_x']);
-                    $p->setId($nodo['id']);
+                    $someNodo = $repoPuntos->find($nodo['id']);
+                    if ($someNodo) {
+                        $t->addPunto($someNodo);
+                        $em->merge($someNodo);
+                    }
+                    else {
+                        $p = new Punto();
+             
+                        $p->setLat((float)$nodo['st_y']);
+                        $p->setLng((float)$nodo['st_x']);
+                        $p->setId($nodo['id']);
 
-                    $t->addPunto($p);
-
-                    $em->merge($p);
-                    $em->flush();      
+                        $t->addPunto($p); 
+                        $em->merge($p);
+                    }
+                    $em->flush(); 
                 }
+                #$response = new Response(var_dump($t));     
+                #return $response;
+                $nodos = [];
 
-                $ts[] = $t;
-      
-                $em->merge($t);
+                $em->persist($t);
                 $em->flush();   
 
             }
@@ -128,8 +135,7 @@ class DefaultController extends Controller
 /*
             $jsonContent = $serializer->serialize($ts, 'json', SerializationContext::create());*/
 
-            $response = new Response('ok');     
-            return $response;
+           
             
         } catch (Exception $ex) {
 

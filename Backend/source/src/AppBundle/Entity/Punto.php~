@@ -42,6 +42,8 @@ class Punto {
         return $this->id;
     }
 
+ 
+
     /**
      * Get id
      *
@@ -53,71 +55,48 @@ class Punto {
     }
 
     /**
-     * Set latitud
+     * Set lat
      *
-     * @param float $latitud
+     * @param float $lat
      * @return Punto
      */
-    public function setLatitud($latitud)
+    public function setLat($lat)
     {
-        $this->latitud = $latitud;
+        $this->lat = $lat;
 
         return $this;
     }
 
     /**
-     * Get latitud
+     * Get lat
      *
      * @return float 
      */
-    public function getLatitud()
+    public function getLat()
     {
-        return $this->latitud;
+        return $this->lat;
     }
 
     /**
-     * Set longitud
+     * Set lng
      *
-     * @param float $longitud
+     * @param float $lng
      * @return Punto
      */
-    public function setLongitud($longitud)
+    public function setLng($lng)
     {
-        $this->longitud = $longitud;
+        $this->lng = $lng;
 
         return $this;
     }
 
     /**
-     * Get longitud
+     * Get lng
      *
      * @return float 
      */
-    public function getLongitud()
+    public function getLng()
     {
-        return $this->longitud;
-    }
-
-    /**
-     * Set tramo
-     *
-     * @param \AppBundle\Entity\Tramo $tramo
-     * @return Punto
-     */
-    public function setTramo(\AppBundle\Entity\Tramo $tramo = null)
-    {
-        $this->tramo = $tramo;
-
-        return $this;
-    }
-
-    /**
-     * Get tramo
-     *
-     * @return \AppBundle\Entity\Tramo 
-     */
-    public function getTramo()
-    {
-        return $this->tramo;
+        return $this->lng;
     }
 }

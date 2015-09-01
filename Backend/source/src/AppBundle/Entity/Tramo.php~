@@ -22,7 +22,7 @@ class Tramo {
      * @ORM\GeneratedValue(strategy="AUTO")
      * @ORM\Column(type="integer")
      */
-    protected $id;
+    private $id;
     
     /**
      *
@@ -39,106 +39,24 @@ class Tramo {
     private $estado;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Punto")
-     * @ORM\JoinTable(name="tramo_puntos",
+     * @ORM\ManyToMany(targetEntity="Punto", cascade={"persist", "remove"})
+     * @ORM\JoinTable(name="tramo_punto",
      *      joinColumns={@ORM\JoinColumn(name="tramo_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="punto_id", referencedColumnName="id")}
      *      )
      */
-    private $puntos;
-    
-    public function __construct($nombre, $puntos, $status = STATUS_TRANSITABLE) {
-        $this->puntos = $puntos;
-        $this->estado = $status;
-        $this->nombre = $nombre;
-    }
-
+    private $punto;
     /**
-     * Get id
+     * Set id
      *
      * @return integer 
      */
-    public function getId()
+    public function setId($id)
     {
+        $this->id = $id;
         return $this->id;
     }
 
-    /**
-     * Set nombre
-     *
-     * @param string $nombre
-     * @return Tramo
-     */
-    public function setNombre($nombre)
-    {
-        $this->nombre = $nombre;
 
-        return $this;
-    }
-
-    /**
-     * Get nombre
-     *
-     * @return string 
-     */
-    public function getNombre()
-    {
-        return $this->nombre;
-    }
-
-    /**
-     * Set estado
-     *
-     * @param string $estado
-     * @return Tramo
-     */
-    public function setEstado($estado)
-    {
-        $this->estado = $estado;
-
-        return $this;
-    }
-
-    /**
-     * Get estado
-     *
-     * @return string 
-     */
-    public function getEstado()
-    {
-        return $this->estado;
-    }
-
-    /**
-     * Add puntos
-     *
-     * @param \AppBundle\Entity\Punto $puntos
-     * @return Tramo
-     */
-    public function addPunto(\AppBundle\Entity\Punto $puntos)
-    {
-        $this->puntos[] = $puntos;
-
-        return $this;
-    }
-
-    /**
-     * Remove puntos
-     *
-     * @param \AppBundle\Entity\Punto $puntos
-     */
-    public function removePunto(\AppBundle\Entity\Punto $puntos)
-    {
-        $this->puntos->removeElement($puntos);
-    }
-
-    /**
-     * Get puntos
-     *
-     * @return \Doctrine\Common\Collections\Collection 
-     */
-    public function getPuntos()
-    {
-        return $this->puntos;
-    }
+    
 }
