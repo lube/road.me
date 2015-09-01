@@ -12,9 +12,9 @@ class Punto {
 
     /**
      *
-     * @var type integer
+     * @var type bigint
      * @ORM\Id
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="bigint")
      */
     private $id;
     
@@ -26,7 +26,6 @@ class Punto {
     
     /**
      *
-     * @var type Punto
      * @ORM\Column(type="float")
      */
     private $lng;

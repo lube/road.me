@@ -1,0 +1,31 @@
+<?php
+namespace AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation\Groups;
+
+/**
+ * @ORM\Table()
+ * @ORM\Entity
+ */
+class Nodo {
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Tramo", inversedBy="nodos")
+     * @ORM\JoinColumn(name="tramo_id", referencedColumnName="id")
+     **/
+    private $tramo;
+    
+    /**
+     * @ORM\ManyToOne(targetEntity="Punto")
+     * @ORM\JoinColumn(name="punto_id", referencedColumnName="id")
+     **/
+    private $punto;
+
+    /**
+     *
+     * @var type integer
+     * @ORM\Column(type="integer")
+     */
+    private $orden;
+}

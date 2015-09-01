@@ -33,3 +33,9 @@ roadme_set_incidente:
     defaults: { _controller: AppBundle:Default:updateIncidente , _format:json}
     requirements:
         _method: POST
+
+roadme_get_home:
+    path: /home
+    defaults: { _controller: AppBundle:Default:index }
+    requirements:
+        _method: GET   

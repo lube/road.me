@@ -39,13 +39,10 @@ class Tramo {
     private $estado;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Punto")
-     * @ORM\JoinTable(name="tramo_punto",
-     *      joinColumns={@ORM\JoinColumn(name="tramo_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="punto_id", referencedColumnName="id")}
-     *      )
-     */
-    private $punto;
+     * @ORM\OneToMany(targetEntity="Nodo", mappedBy="tramo")
+     **/
+    private $nodos;
+     
     /**
      * Set id
      *
@@ -154,5 +151,38 @@ class Tramo {
     public function getPunto()
     {
         return $this->punto;
+    }
+
+    /**
+     * Add nodos
+     *
+     * @param \AppBundle\Entity\Nodo $nodos
+     * @return Tramo
+     */
+    public function addNodo(\AppBundle\Entity\Nodo $nodos)
+    {
+        $this->nodos[] = $nodos;
+
+        return $this;
+    }
+
+    /**
+     * Remove nodos
+     *
+     * @param \AppBundle\Entity\Nodo $nodos
+     */
+    public function removeNodo(\AppBundle\Entity\Nodo $nodos)
+    {
+        $this->nodos->removeElement($nodos);
+    }
+
+    /**
+     * Get nodos
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getNodos()
+    {
+        return $this->nodos;
     }
 }

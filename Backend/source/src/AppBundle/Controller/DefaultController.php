@@ -4,6 +4,7 @@ namespace AppBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\DoctrineBundle\ConnectionFactory;
 use JMS\Serializer\SerializerBuilder;
@@ -11,6 +12,7 @@ use JMS\Serializer\SerializationContext;
 
 use AppBundle\Entity\Punto;
 use AppBundle\Entity\Tramo;
+use AppBundle\Entity\Nodo;
 
 class DefaultController extends Controller
 {
@@ -28,16 +30,35 @@ class DefaultController extends Controller
             $este      = $json_object['este'];
 
             $qb = $em->createQueryBuilder();
-            $qb->select('t', 'p')
+            $qb->select('t', 'p')   
                     ->from('AppBundle:Tramo', 't')
-                    ->join('t.puntos', 'p')
+                    ->join('AppBundle:Nodo', 'n', 'WITH', 'n.tramo = t.id')
+                    ->join('AppBundle:Punto', 'p', 'WITH', 'n.punto = p.id')
                     ->where($qb->expr()->gte('p.lng', $oeste))
                     ->andWhere($qb->expr()->lte('p.lng', $este))
                     ->andWhere($qb->expr()->gte('p.lat', $sur))
                     ->andWhere($qb->expr()->lte('p.lat', $norte));
+                  
 
             $query = $qb->getQuery();
             $itemsPage = $query->getArrayResult();
+
+            $i = -1;
+
+            foreach ($itemsPage as $key => $value) {
+                if (isset($value['nombre'])) {
+                    $i++;
+                    $results[$i]['id'] = $value['id'];
+                    $results[$i]['nombre'] = $value['nombre'];
+                    $results[$i]['estado'] = $value['estado']; 
+                    $j = 0;
+                } else {
+                    $results[$i]['puntos'][$j]['id'] = $value['id'];
+                    $results[$i]['puntos'][$j]['lat'] = $value['lat'];
+                    $results[$i]['puntos'][$j]['lng'] = $value['lng'];
+                    $j++;
+                }
+            }
             
             $jsonContent = $serializer->serialize($itemsPage, 'json', SerializationContext::create());
             
@@ -48,6 +69,12 @@ class DefaultController extends Controller
 
         }
     }
+
+    public function indexAction(Request $request)
+    {
+        return $this->render('AppBundle:Default:mapa.html.twig');
+    }
+
 
     public function updateTestAction(Request $request)
     {
@@ -65,11 +92,9 @@ class DefaultController extends Controller
                 'password' => '12341234',
                 'host' => 'localhost',
                 'dbname' => 'osm',
-            ))->prepare('select id, tags, nodes from ways limit 1;');;
+            ))->prepare('select id, tags, nodes from ways;');;
 
             $conn->execute();
-
-         //   $jsonContent = $serialraw[0]izer->serialize(, 'json', SerializationContext::create());
             
             foreach ($conn->fetchAll() as $way) {
                 if (isset($way['tags'])) {
@@ -77,72 +102,88 @@ class DefaultController extends Controller
                
                     if (strpos($raw[0], 'name')) {
                         $pre = stripslashes(stripslashes($raw[0]));
-                        $ways[] = array('id' => $way['id'],'name' => substr($pre, 9, -1), 'nodes' =>  explode(',',str_replace(array('{','}'), array('',''), $way['nodes']))) ;
+                        $ways[] = array('id' => $way['id'], 'nodes' =>  explode(',',str_replace(array('{','}'), array('',''), $way['nodes']))) ;
                     }
                 }
 
             }
 
             foreach ($ways as $way) {
-                foreach ($way['nodes'] as $j => $point) {
+                foreach ($way['nodes'] as $j => $pid) {
                     $conn = $connectionFactory->createConnection(array(
                         'driver' => 'pdo_pgsql',
                         'user' => 'osm',
                         'password' => '12341234',
                         'host' => 'localhost',
                         'dbname' => 'osm',
-                    ))->prepare('select id, ST_x(geom), ST_y(geom) from nodes where id ='. $point .';');;
+                    ));
+                    $stmt = $conn->prepare('select id, ST_x(geom), ST_y(geom) from nodes where id ='. $pid .';');
 
-                    $conn->execute();
+                    $stmt->execute();
+                    $result = $stmt->fetchAll();
 
-                    $result = $conn->fetchAll();
                     $nodos[] = $result[0];
+
+                    if ($conn->close()) {
+                        $code = $conn->errorCode();
+                        $desc = $conn->errorInfo();
+
+                        $jsonContent = $serializer->serialize(array($code, $desc), 'json', SerializationContext::create());
+                        $response = new Response($jsonContent);  
+                    }
                 }
 
                 $t = new Tramo();
                 $t->setEstado('TN');
                 $t->setId($way['id']);
-                $t->setNombre($way['name']);
+                $t->setNombre('t');
 
+                $em->persist($t);
+                $em->flush();
+                set_time_limit (30);
 
-                foreach ($nodos as $nodo) {
-                    $someNodo = $repoPuntos->find($nodo['id']);
-                    if ($someNodo) {
-                        $t->addPunto($someNodo);
-                        $em->merge($someNodo);
-                    }
-                    else {
+                foreach ($nodos as $i => $nodo) {
+                    $n = new Nodo();
+                    
+                    $p = $repoPuntos->find($nodo['id']);
+
+                    if (!$p) {
                         $p = new Punto();
              
                         $p->setLat((float)$nodo['st_y']);
                         $p->setLng((float)$nodo['st_x']);
                         $p->setId($nodo['id']);
 
-                        $t->addPunto($p); 
-                        $em->merge($p);
+                        $em->persist($p);
+                        $em->flush();
                     }
+
+                    $n->setPunto($p);
+                    $n->setTramo($t);
+                    $n->setOrden($i);
+
+                    $t->addNodo($n);
+
+                    $em->persist($n);
                     $em->flush(); 
                 }
-                #$response = new Response(var_dump($t));     
-                #return $response;
                 $nodos = [];
 
-                $em->persist($t);
+                $em->merge($t);
                 $em->flush();   
 
             }
 
-/*
-            $jsonContent = $serializer->serialize($ts, 'json', SerializationContext::create());*/
-
-           
+            $jsonContent = $serializer->serialize($t, 'json', SerializationContext::create());
+            $response = new Response($jsonContent);     
+            return $response;
             
         } catch (Exception $ex) {
 
         }
     }
     
-    public function getTramosAction()
+    public function getTramosAction(Request $request)
     {
         try{
             $em = $this->getDoctrine()->getManager();
@@ -152,13 +193,37 @@ class DefaultController extends Controller
             $qb = $em->createQueryBuilder();
             $qb->select('t', 'p')   
                     ->from('AppBundle:Tramo', 't')
-                    ->join('t.puntos', 'p');
+                    ->join('AppBundle:Nodo', 'n', 'WITH', 'n.tramo = t.id')
+                    ->join('AppBundle:Punto', 'p', 'WITH', 'n.punto = p.id');
+                  
 
             $query = $qb->getQuery();
             $itemsPage = $query->getArrayResult();
 
-            $jsonContent = $serializer->serialize($itemsPage, 'json', SerializationContext::create());
+            $i = -1;
             
+            foreach ($itemsPage as $key => $value) {
+                if (isset($value['nombre'])) {
+                    $i++;
+                    $results[$i]['id'] = $value['id'];
+                    $results[$i]['nombre'] = $value['nombre'];
+                    $results[$i]['estado'] = $value['estado']; 
+                    $j = 0;
+                    if (!isset($itemsPage[$key+1]['lat'])) {
+                        $results[$i]['puntos'][$j]['lat'] = 0;
+                        $results[$i]['puntos'][$j]['lng'] = 0;
+                    }
+                } else {
+            #       $results[$i]['puntos'][$j]['id'] = $value['id'];
+                    $results[$i]['puntos'][$j]['lat'] = $value['lat'];
+                    $results[$i]['puntos'][$j]['lng'] = $value['lng'];
+                    $j++;
+                }
+            }
+
+
+            $jsonContent = $serializer->serialize($results, 'json', SerializationContext::create());
+        
             $response = new Response($jsonContent);     
             return $response;
             
